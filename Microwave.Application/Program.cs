@@ -49,6 +49,8 @@ namespace Microwave.Application
             // Wait for input
 
             System.Console.ReadLine();
+
+            
         }
     }
 }
