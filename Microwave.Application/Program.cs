@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using MicrowaveOvenClasses.Boundary;
 using MicrowaveOvenClasses.Controllers;
+using MicrowaveOvenClasses.Interfaces;
 
 namespace Microwave.Application
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
