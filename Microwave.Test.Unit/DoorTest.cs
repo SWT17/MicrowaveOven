@@ -24,7 +24,7 @@ namespace Microwave.Test.Unit
         [Test]
         public void Open_1subscriber_IsNotified()
         {
-            bool notified = true;  ////////////////////////////////////////////////// ændret fra false til true
+            bool notified = true;  ////////////////////////////////////////////// ændret fra false til true
 
             uut.Opened += (sender, args) => notified = true;
             uut.Open();
