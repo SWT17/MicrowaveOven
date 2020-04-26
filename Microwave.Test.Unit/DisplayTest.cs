@@ -22,7 +22,9 @@ namespace Microwave.Test.Unit
         public void ShowTime_ZeroMinuteZeroSeconds_CorrectOutput()
         {
             uut.ShowTime(0,0);
+         
             output.Received().OutputLine(Arg.Is<string>(str => str.Contains("00:00")));
+
         }
 
         [Test]
