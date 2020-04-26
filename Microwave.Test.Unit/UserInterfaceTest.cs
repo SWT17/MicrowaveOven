@@ -287,6 +287,24 @@ namespace Microwave.Test.Unit
             cooker.Received(1).Stop();
         }
 
+
+        // Unit test tilføjet som resultat af fejl identificeret og rettet
+        [Test]
+        public void Cooking_DoorIsOpened_DisplayIsCleared()
+        {
+            powerButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // Now in SetPower
+            timeButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // Now in SetTime
+            startCancelButton.Pressed += Raise.EventWith(this, EventArgs.Empty);
+            // Now in cooking
+
+            // Open door
+            door.Opened += Raise.EventWith(this, EventArgs.Empty);
+
+            display.Received(1).Clear();
+        }
+
         [Test]
         public void Cooking_CancelButton_CookerCalled()
         {
