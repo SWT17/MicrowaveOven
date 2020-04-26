@@ -323,7 +323,10 @@ namespace MicrowaveOven.Test.Integration
         /// </summary>
         [Test]
 
-        public void CookingHasStarted_LightIsOn()
+        /// <summary>
+        /// Test burde fejle, cooker starter ikke at lyset tændes, det er startCancelButtonPressed der skal tænde lyset. 
+        /// </summary>
+        public void CookingHasStarted_LightIsOn() 
         {
             _powerButton.Press();
             _timeButton.Press();
