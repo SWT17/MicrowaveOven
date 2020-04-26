@@ -49,6 +49,7 @@ namespace MicrowaveOvenClasses.Boundary
             if (TimeRemaining <= 0)
             {
                 Expire();
+                
             }
         }
 
