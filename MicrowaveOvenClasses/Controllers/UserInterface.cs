@@ -123,6 +123,9 @@ namespace MicrowaveOvenClasses.Controllers
                     myCooker.Stop();
                     powerLevel = 50;
                     time = 1;
+                    // Her findes en kodefejl
+                    myDisplay.Clear();
+                    // Rettet
                     myState = States.DOOROPEN;
                     break;
             }

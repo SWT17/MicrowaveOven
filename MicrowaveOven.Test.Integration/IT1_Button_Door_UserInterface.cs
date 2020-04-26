@@ -40,7 +40,7 @@ namespace MicrowaveOven.Test.Integration
 
         }
 
-        #region Skridt 1-5
+        #region Skridt 1-5 / 15-19
 
         /// <summary>
         /// Skridt 1-2 i UC
@@ -74,13 +74,11 @@ namespace MicrowaveOven.Test.Integration
         /// </summary>
         /// <param name="numberOfPresses"></param>
         /// <param name="powerLevel"></param>
-        [TestCase(1, 50, 1)]
-        [TestCase(4, 200, 1)]
-        [TestCase(13, 650, 1)]
-        [TestCase(14, 700, 1)]
-        [TestCase(15, 50, 2)]
-        [TestCase(20, 300, 2)]
-        public void PowerButtonPress_PowerDisplayed(int numberOfPresses, int powerLevel, int numberOfTimesCalled)
+        [TestCase(1, 50)]
+        [TestCase(4, 200)]
+        [TestCase(13, 650)]
+        [TestCase(14, 700)]
+        public void PowerButtonPress_PowerDisplayed(int numberOfPresses, int powerLevel)
         {
             _door.Open();
             _door.Close();
@@ -91,6 +89,22 @@ namespace MicrowaveOven.Test.Integration
                 {
                     _display.ClearReceivedCalls();
                 }
+                _powerButton.Press();
+            }
+
+            _display.Received(1).ShowPower(Arg.Is<int>(powerLevel));
+
+        }
+
+        [TestCase(15, 50, 2)]
+        [TestCase(20, 300, 2)]
+        public void PowerButtonPress_MoreThan15Times_PowerDisplayed(int numberOfPresses, int powerLevel, int numberOfTimesCalled)
+        {
+            _door.Open();
+            _door.Close();
+
+            for (int i = 0; i < numberOfPresses; i++)
+            {
                 _powerButton.Press();
             }
 
@@ -123,19 +137,43 @@ namespace MicrowaveOven.Test.Integration
         }
 
         /// <summary>
-        /// Extension 2: Skridt 4 - afbrudt setup under power indstilling
+        /// Extension 1: Skridt 2
+        /// </summary>
+        /// <param name="numberOfPresses"></param>
+        [TestCase(1)]
+        [TestCase(4)]
+        [TestCase(13)]
+        public void WhileSettingPower_StartCancelButtonPress_PowerSettingCleared(int numberOfPresses)
+        {
+            _door.Open();
+            _door.Close();
+
+            for (int i = 0; i < numberOfPresses; i++)
+            {
+                _powerButton.Press();
+            }
+
+            _startCancelButton.Press();
+
+            _powerButton.Press();
+
+            _display.Received().ShowPower(Arg.Is<int>(50));
+        }
+
+        /// <summary>
+        /// Extension 2: Skridt 4
         /// </summary>
         [Test]
         public void WhileSettingPower_DoorOpened_LightOn()
         {
             _powerButton.Press();
             _door.Open();
-            
+
             _light.Received(1).TurnOn();
         }
 
         /// <summary>
-        /// Extension 2: Skridt 5 - afbrudt setup under power indstilling
+        /// Extension 2: Skridt 5
         /// </summary>
 
         [Test]
@@ -145,6 +183,21 @@ namespace MicrowaveOven.Test.Integration
             _door.Open();
 
             _display.Received(1).Clear();
+        }
+
+        /// <summary>
+        /// Extension 2: Skridt 6
+        /// </summary>
+
+        [Test]
+        public void WhileSettingPower_DoorOpened_PowerSettingCleared()
+        {
+            _powerButton.Press();
+            _door.Open();
+
+            _powerButton.Press();
+
+            _display.Received().ShowPower(Arg.Is<int>(50));
         }
 
         #endregion
@@ -177,13 +230,13 @@ namespace MicrowaveOven.Test.Integration
                 _timeButton.Press();
             }
 
-            _display.Received().ShowTime(Arg.Is<int>(time),Arg.Is<int>(0));
+            _display.Received().ShowTime(Arg.Is<int>(time), Arg.Is<int>(0));
 
         }
 
 
         /// <summary>
-        /// Extension 2: Skridt 4 - afbrudt setup under time indstilling
+        /// Extension 2: Skridt 4
         /// </summary>
         [Test]
         public void WhileSettingTime_DoorOpened_LightOn()
@@ -191,12 +244,12 @@ namespace MicrowaveOven.Test.Integration
             _powerButton.Press();
             _timeButton.Press();
             _door.Open();
-            
+
             _light.Received(1).TurnOn();
         }
 
         /// <summary>
-        /// Extension 2: Skridt 5 - afbrudt setup under time indstilling
+        /// Extension 2: Skridt 5
         /// </summary>
 
         [Test]
@@ -207,6 +260,29 @@ namespace MicrowaveOven.Test.Integration
             _door.Open();
 
             _display.Received(1).Clear();
+        }
+
+        /// <summary>
+        /// Extension 2: Skridt 6
+        /// </summary>
+
+        [TestCase(1)]
+        [TestCase(4)]
+        [TestCase(13)]
+        public void WhileSettingPower_DoorOpened_TimeSettingCleared(int numberOfPresses)
+        {
+            _powerButton.Press();
+            for (int i = 0; i < numberOfPresses; i++)
+            {
+                _timeButton.Press();
+
+            }
+            _door.Open();
+
+            _powerButton.Press();
+            _timeButton.Press();
+
+            _display.Received().ShowTime(Arg.Is<int>(1), Arg.Is<int>(0));
         }
 
         #endregion
@@ -221,7 +297,7 @@ namespace MicrowaveOven.Test.Integration
         /// <param name="power"></param>
         /// <param name="time"></param>
 
-        [TestCase(1, 1,50,60)]
+        [TestCase(1, 1, 50, 60)]
         [TestCase(4, 3, 200, 180)]
         [TestCase(13, 17, 650, 1020)]
         [TestCase(14, 22, 700, 1320)]
@@ -239,7 +315,7 @@ namespace MicrowaveOven.Test.Integration
 
             _startCancelButton.Press();
 
-            _cooker.Received().StartCooking(power,time);
+            _cooker.Received().StartCooking(power, time);
         }
 
         /// <summary>
@@ -249,12 +325,163 @@ namespace MicrowaveOven.Test.Integration
 
         public void CookingHasStarted_LightIsOn()
         {
-            _cooker.StartCooking(100,60);
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+
             _light.Received().TurnOn();
         }
 
         #endregion
 
+        #region Extension 3
+
+        /// <summary>
+        /// Extension 3: Skridt 8
+        /// </summary>
+        [Test]
+
+        public void CookingHasStarted_StartCancelButtonPressed_CookerIsStopped()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _startCancelButton.Press();
+
+            _cooker.Received().Stop();
+        }
+
+        /// <summary>
+        /// Extension 3: Skridt 9
+        /// </summary>
+        [Test]
+
+        public void CookingHasStarted_StartCancelButtonPressed_DisplayIsCleared()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _startCancelButton.Press();
+
+            _display.Received().Clear();
+        }
+
+        /// <summary>
+        /// Extension 3: Skridt 10
+        /// </summary>
+        [Test]
+
+        public void CookingHasStarted_StartCancelButtonPressed_LightIsOff()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _startCancelButton.Press();
+
+            _light.Received().TurnOff();
+        }
+        /// <summary>
+        /// Extension 3: Skridt 11
+        /// </summary>
+        [Test]
+
+        public void CookingHasStarted_StartCancelButtonPressed_PowerSettingCleared()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _startCancelButton.Press();
+
+            _powerButton.Press();
+
+            _display.Received().ShowPower(Arg.Is<int>(50));
+        }
+
+        /// <summary>
+        /// Extension 3: Skridt 11
+        /// </summary>
+        [Test]
+
+        public void CookingHasStarted_StartCancelButtonPressed_TimeSettingCleared()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _startCancelButton.Press();
+
+            _powerButton.Press();
+            _timeButton.Press();
+
+            _display.Received().ShowTime(Arg.Is<int>(1), Arg.Is<int>(0));
+        }
+        #endregion
+
+        #region Extension 4
+
+        /// <summary>
+        /// Extension 4: Skridt 13
+        /// </summary>
+        [Test]
+        public void CookingHasStarted_DoorOpened_CookerIsStopped()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _door.Open();
+
+            _cooker.Received().Stop();
+        }
+
+        /// <summary>
+        /// Extension 4: Skridt 14
+        /// </summary>
+        [Test]
+
+        public void CookingHasStarted_DoorOpened_DisplayIsCleared()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _door.Open();
+
+            _display.Received().Clear();
+        }
+
+        /// <summary>
+        /// Extension 4: Skridt 15
+        /// </summary>
+        [Test]
+
+        public void CookingHasStarted_DoorOpened_PowerSettingCleared()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _door.Open();
+
+            _powerButton.Press();
+
+            _display.Received().ShowPower(Arg.Is<int>(50));
+        }
+
+        /// <summary>
+        /// Extension 4: Skridt 15
+        /// </summary>
+        [Test]
+
+        public void CookingHasStarted_DoorOpened_TimeSettingCleared()
+        {
+            _powerButton.Press();
+            _timeButton.Press();
+            _startCancelButton.Press();
+            _door.Open();
+
+            _powerButton.Press();
+            _timeButton.Press();
+
+            _display.Received().ShowTime(Arg.Is<int>(1), Arg.Is<int>(0));
+        }
+        #endregion
 
         //Hører til i trin 3
 
