@@ -43,7 +43,11 @@ namespace MicrowaveOvenClasses.Boundary
         {
             // One tick has passed
             // Do what I should
-            TimeRemaining -= 1000;
+
+            // TimeRemaining skal ikke tælle ned med 1000, da denne sættes i sekunder fra CookController
+            TimeRemaining -= 1;
+            // Rettet fra 1000 til 1
+
             TimerTick?.Invoke(this, EventArgs.Empty);
 
             if (TimeRemaining <= 0)
