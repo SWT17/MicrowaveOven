@@ -15,11 +15,11 @@
         <ClassMask>MicrowaveOvenClasses.Boundary.Output</ClassMask>
         <FunctionMask>*</FunctionMask>
       </FilterEntry>
-      <FilterEntry>
+      <!--<FilterEntry>
         <ModuleMask>Microwave.Test.Unit</ModuleMask>
         <ClassMask>Microwave.Test.Unit.*</ClassMask>
         <FunctionMask>*</FunctionMask>
-      </FilterEntry>
+      </FilterEntry>-->
     </ExcludeFilters>
   </Filters>
   <!-- Coverage filters. It's possible to use asterisks as wildcard symbols.
