@@ -21,7 +21,9 @@ namespace Microwave.Test.Unit
             ManualResetEvent pause = new ManualResetEvent(false);
 
             uut.TimerTick += (sender, args) => pause.Set();
-            uut.Start(2000);
+            // her testes om expired sker efter 2100ms. Da timer er sat til 2000 sekunder sker dette ikke. Ændret til 2
+            uut.Start(2);
+            // Rettet
 
             // wait for a tick, but no longer
             Assert.That(pause.WaitOne(1100));
@@ -33,7 +35,9 @@ namespace Microwave.Test.Unit
             ManualResetEvent pause = new ManualResetEvent(false);
 
             uut.TimerTick += (sender, args) => pause.Set();
-            uut.Start(2000);
+            // her testes om expired sker efter 2100ms. Da timer er sat til 2000 sekunder sker dette ikke. Ændret til 2
+            uut.Start(2);
+            // Rettet
 
             // wait shorter than a tick, shouldn't come
             Assert.That(!pause.WaitOne(900));
@@ -45,7 +49,9 @@ namespace Microwave.Test.Unit
             ManualResetEvent pause = new ManualResetEvent(false);
 
             uut.Expired += (sender, args) => pause.Set();
-            uut.Start(2000);
+            // her testes om expired sker efter 2100ms. Da timer er sat til 2000 sekunder sker dette ikke. Ændret til 2
+            uut.Start(2);
+            // Rettet
 
             // wait for expiration, but not much longer, should come
             Assert.That(pause.WaitOne(2100));
@@ -57,7 +63,9 @@ namespace Microwave.Test.Unit
             ManualResetEvent pause = new ManualResetEvent(false);
 
             uut.Expired += (sender, args) => pause.Set();
-            uut.Start(2000);
+            // Her vil test bestå da der testes om 2000 sekunder er expired på 1900ms. Det er dårligt test-design. Tid ændret til 2.
+            uut.Start(2);
+            // Rettet
 
             // wait shorter than expiration, shouldn't come
             Assert.That(!pause.WaitOne(1900));
@@ -72,7 +80,9 @@ namespace Microwave.Test.Unit
             uut.Expired += (sender, args) => pause.Set();
             uut.TimerTick += (sender, args) => notifications++;
 
-            uut.Start(2000);
+            // I øjeblikket vil der gå 2000 sekunder før Expired kaldes. Derved er 2100ms ikke nok til at teste dette. Ændres til 2 sekunder.
+            uut.Start(2);
+            // Rettet
 
             // wait longer than expiration
             Assert.That(pause.WaitOne(2100));
@@ -93,7 +103,10 @@ namespace Microwave.Test.Unit
 
             uut.TimerTick += (sender, args) => pause.Set();
 
-            uut.Start(2000);
+            // her testes om expired sker efter 2100ms. Da timer er sat til 2000 sekunder sker dette ikke. Ændret til 2
+            uut.Start(2);
+            // Rettet
+
             uut.Stop();
 
             Assert.That(!pause.WaitOne(1100));
@@ -106,7 +119,10 @@ namespace Microwave.Test.Unit
 
             uut.Expired += (sender, args) => pause.Set();
 
-            uut.Start(2000);
+            // her testes om expired sker efter 2100ms. Da timer er sat til 2000 sekunder sker dette ikke. Ændret til 2
+            uut.Start(2);
+            // Rettet
+
             uut.Stop();
 
             Assert.That(!pause.WaitOne(2100));
